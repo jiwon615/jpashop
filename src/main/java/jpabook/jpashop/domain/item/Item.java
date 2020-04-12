@@ -26,6 +26,8 @@ public abstract class Item {
     @ManyToMany(mappedBy = "items")
     private List<Category> categories = new ArrayList<>();
 
+
+    // Item을 가지고 있는 entity쪽이 응집력이 높기에, 이곳에 비지니스 로직을 작성
     /**
     * stock 증가
     */

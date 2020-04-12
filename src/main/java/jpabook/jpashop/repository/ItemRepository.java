@@ -12,11 +12,12 @@ import java.util.List;
 public class ItemRepository {
     private final EntityManager em;
 
+    // 상품 등록
     public void save(Item item) {
         if(item.getId() == null) {
             em.persist(item);
         } else {
-            em.merge(item);
+            em.merge(item);  // 강제로 update 한다고 보면 됨
         }
     }
 

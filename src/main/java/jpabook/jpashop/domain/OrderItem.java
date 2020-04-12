@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 누군가 new OrderItem() 이렇게 생성하지 않도록 막아줌
 public class OrderItem {
 
     @Id @GeneratedValue

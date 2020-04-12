@@ -28,7 +28,7 @@ class MemberServiceTest {
         Long savedId = memberService.join(member);
 
         // test  (이렇게 된다)
-        assertEquals(member, memberRepository.findOne(savedId));
+        assertEquals(member, memberRepository.findOne(savedId));   // 같은 영속성 컨텍스트 내에서는 같은 id값은 true
     }
 
     @Test

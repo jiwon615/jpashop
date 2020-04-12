@@ -80,7 +80,7 @@ public class Order {
 
         this.setStatus(OrderStatus.CANCEL);
         for (OrderItem orderItem: orderItems) {
-            orderItem.cancel();
+            orderItem.cancel();  // 하나의 주문에 여러 주문상품들이 있을수있으니, 걔네들 다 각각 주문취소해줘야 함
         }
     }
 
