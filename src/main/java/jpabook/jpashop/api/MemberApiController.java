@@ -1,15 +1,15 @@
 package jpabook.jpashop.api;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController  // @Controller와 @ResponseBody를 합친 것
 @RequiredArgsConstructor
@@ -33,6 +33,10 @@ public class MemberApiController {
         }
     }
 
+    /*
+    *  회원 등록 API
+    * */
+
     // 2. 더 나은 방법 (엔티티 스펙이 변해도 API 스펙이 변경 되지 않아도 됨)
     /* ex) Member 속성 중 name -> userName으로 바꾸면, 아래에서 setName -> setUserName으로만 바꾸면 됨 */
     @PostMapping("/api/v2/members")
@@ -47,6 +51,32 @@ public class MemberApiController {
     @Data
     static class CreateMemberRequest {
         @NotEmpty
+        private String name;
+    }
+
+   /*
+   * 회원 수정 API
+   * */
+   @PutMapping("/api/v2/members/{id}")
+   public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id,
+                                              @RequestBody @Valid UpdateMemberRequest request) {
+        memberService.update(id, request.getName());
+       Member findMember = memberService.findOne(id);
+
+       return new UpdateMemberResponse(findMember.getId(), findMember.getName());
+   }
+
+
+    @Data
+    @AllArgsConstructor
+    static class UpdateMemberResponse {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    static class UpdateMemberRequest{
+       @NotEmpty
         private String name;
     }
 
