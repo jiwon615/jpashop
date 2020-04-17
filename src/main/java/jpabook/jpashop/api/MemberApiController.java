@@ -1,6 +1,7 @@
 package jpabook.jpashop.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
@@ -16,6 +17,38 @@ import org.springframework.web.bind.annotation.*;
 public class MemberApiController {
 
     private final MemberService memberService;
+
+    /*
+    * 회원 조회
+    * */
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> collect = findMembers.stream()  // Member를 MemberDto로 변환
+                .map(m -> new MemberDto(m.getName()))
+                .collect(Collectors.toList());
+
+        return new Result(collect.size(), collect);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private int count;
+        private T data;  // data의 값은 위 list의 값이 될 것임
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
+        private String name;
+    }
 
     // 1. Entity를 반환하면 안됨. API스펙은 언제든 변경될 수 있는데 유지보수에 어려워 DTO 등을 따로 만들어서 관리해야 함
     @PostMapping("/api/v1/members")
