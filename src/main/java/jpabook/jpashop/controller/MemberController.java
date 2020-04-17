@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
+
     private final MemberService memberService;
 
     // 회원가입 페이지

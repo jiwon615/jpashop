@@ -50,9 +50,24 @@ public class MemberApiController {
         private String name;
     }
 
+    /*
+    *  회원 등록 API
+    * */
     // 1. Entity를 반환하면 안됨. API스펙은 언제든 변경될 수 있는데 유지보수에 어려워 DTO 등을 따로 만들어서 관리해야 함
     @PostMapping("/api/v1/members")
     public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {   // @RequestBody는 JSON으로 온 body를 Member로 매핑해줌
+        Long id = memberService.join(member);
+        return new CreateMemberResponse(id);
+    }
+
+    // 2. 더 나은 방법 (엔티티 스펙이 변해도 API 스펙이 변경 되지 않아도 됨)
+    /* ex) Member 속성 중 name -> userName으로 바꾸면, 아래에서 setName -> setUserName으로만 바꾸면 됨 */
+
+    @PostMapping("/api/v2/members")
+    public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
+        Member member = new Member();
+        member.setName(request.getName());
+
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
     }
@@ -66,23 +81,9 @@ public class MemberApiController {
         }
     }
 
-    /*
-    *  회원 등록 API
-    * */
-
-    // 2. 더 나은 방법 (엔티티 스펙이 변해도 API 스펙이 변경 되지 않아도 됨)
-    /* ex) Member 속성 중 name -> userName으로 바꾸면, 아래에서 setName -> setUserName으로만 바꾸면 됨 */
-    @PostMapping("/api/v2/members")
-    public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
-        Member member = new Member();
-        member.setName(request.getName());
-
-        Long id = memberService.join(member);
-        return new CreateMemberResponse(id);
-    }
-
     @Data
     static class CreateMemberRequest {
+
         @NotEmpty
         private String name;
     }
@@ -90,7 +91,8 @@ public class MemberApiController {
    /*
    * 회원 수정 API
    * */
-   @PutMapping("/api/v2/members/{id}")
+
+    @PutMapping("/api/v2/members/{id}")
    public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id,
                                               @RequestBody @Valid UpdateMemberRequest request) {
         memberService.update(id, request.getName());
@@ -98,11 +100,10 @@ public class MemberApiController {
 
        return new UpdateMemberResponse(findMember.getId(), findMember.getName());
    }
-
-
     @Data
     @AllArgsConstructor
     static class UpdateMemberResponse {
+
         private Long id;
         private String name;
     }
