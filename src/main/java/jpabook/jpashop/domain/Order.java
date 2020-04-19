@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Order {
        cascade 있다면 persist(order)
     */
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // CascadeType.ALL : Order가 persist되면 Delivery도 persist
     @JoinColumn(name = "delivery_id")  // 연관관계의 주인을 Order 쪽으로 정했기에 이거 써줌. 주인이 아닌 거울쪽은 mapped by 씀
     private Delivery delivery; // 배송정보
