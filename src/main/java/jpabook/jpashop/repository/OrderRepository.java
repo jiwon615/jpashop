@@ -2,6 +2,7 @@ package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -92,4 +93,26 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); // 최대 1000건
         return query.getResultList();
     }
+
+
+    // (엔티티를 DTO로 변환 2)fetch join 사용하여 성능 최적화
+    public List<Order> findAllWithMemberDeliver() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
+//    // (엔티티를 DTO로 변환 3)엔티티를 OrderSimpleQueryDto에 넘겨 바로 DTO로 변환
+//    public List<OrderSimpleQueryDto> findOrderDtos() {
+//        return em.createQuery(
+//                "select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+//                        "from Order o" +
+//                        " join fetch o.member m" +
+//                        " join fetch o.delivery d", OrderSimpleQueryDto.class)
+//                .getResultList();
+//    }
+
+
 }
